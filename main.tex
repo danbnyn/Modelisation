@@ -4,9 +4,22 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{hyperref}
-\usepackage{booktabs}
 \usepackage{tikz}
-\usetikzlibrary{positioning, shapes.geometric, arrows}
+\usepackage{graphicx} % Required for including images
+\usepackage{float} % For precise placement of figures
+\usepackage{booktabs} % For formal tables
+\usepackage{listings} % For code listing
+
+% Configuration de l'apparence du code
+\lstset{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false,
+    tabsize=2
+}
 
 \title{Virothérapie dans le traitement du cancer}
 \author{Dan, Martin, Hugo}
@@ -78,6 +91,71 @@ Nous présentons maintenant les paramètres du modèle dans le tableau ci-dessou
 }
 \caption{Paramètres du modèle de virothérapie et leur méthode de détermination.}
 \end{table}
+
+\section{Simulation MATLAB}
+Nous avons implémenté un modèle de dynamique de population de virothérapie en utilisant MATLAB. La simulation est basée sur un ensemble d'équations différentielles ordinaires qui modélisent l'interaction entre les cellules tumorales, les cellules infectées par le virus et les particules virales libres.
+
+\subsection{Fonction MATLAB}
+La fonction MATLAB suivante a été utilisée pour définir le système d'équations différentielles :
+
+\begin{lstlisting}[language=Matlab, caption={Fonction MATLAB pour la simulation de virothérapie.}, label={lst:matlab_code}]
+    function udot = fcn(u)
+        r = 0.2062134; % Effective growth rate of uninfected cells day^-1
+        K = 2139.258; % Carrying capacity (in 10^6 cells)
+        kappa = 0.001; % Infection rate constant (per day per 10^6 cells or virions)
+        rho = 0.2145; % Rate constant of cell fusion (per day per 10^6 cells)
+        delta = 0.5115; % Effective death rate constant of infected cells day^-1
+        omega = 0; % Rate constant of virus elimination day^-1
+        alpha = 0; % Virus production rate constant by infected cells (virions per day per cell)
+        epsilon = 1.64877; % 
+        
+        y = u(1); % Tumor cells 
+        x = u(2); % Virus infected cell 
+        v = u(3); % Free virus cells
+        
+        ydot = r*y*(1-((y+x)/K).^epsilon)-kappa*y*v-rho*x*y;
+        xdot = kappa*y*v - delta*x;
+        vdot = alpha*x-omega*v-kappa*y*v;
+        
+        udot = [ydot, xdot, vdot];
+    end
+\end{lstlisting}
+
+\subsection{Résultats de Simulation}
+La figure \ref{fig:simstate} montre la représentation d'état utilisée dans Simulink pour configurer notre simulation, tandis que la figure \ref{fig:simresult} illustre les résultats de la simulation sous forme de graphiques de la dynamique temporelle des populations.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{src/state_representation.png}
+\caption{Représentation d'état dans Simulink pour la simulation de virothérapie.}
+\label{fig:simstate}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{src/simulation_result.png}
+\caption{Résultats de simulation montrant la dynamique des populations.}
+\label{fig:simresult}
+\end{figure}
+
+\subsection{Paramètres de Simulation}
+La table \ref{tab:parameters} récapitule les valeurs des paramètres utilisées pour les simulations.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{@{}cccccccc@{}}
+    \toprule
+    Variation & \( r \) & \( K \) & \( k \) & \( \delta \) & \( \rho \) & \( \alpha \) & \( \omega \) \\ \midrule
+    Base      & 0.0005957 & \( 1 \times 10^6 \) & 0.0001 & 0.1 & 0.0001 & 0.05  & 0.001 \\
+    Var 1     & 0.0005957 & \( 1 \times 10^6 \) & 0.0001 & 0.1 & 0.0001 & 0.055 & 0.001 \\
+    Var 2     & 0.0005957 & \( 1 \times 10^6 \) & 0.0001 & 0.1 & 0.0001 & 0.06  & 0.001 \\
+    Var 3     & 0.0005957 & \( 1 \times 10^6 \) & 0.0001 & 0.1 & 0.0001 & 0.065 & 0.001 \\
+    % Continuer avec plus de variations
+    \bottomrule
+    \end{tabular}
+    \caption{Variations des paramètres pour les simulations de virothérapie.}
+    \label{tab:parameters}
+    \end{table}
 
 \bibliographystyle{unsrt}
 \bibliography{references}
