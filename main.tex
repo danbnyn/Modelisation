@@ -1,21 +1,22 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows}
 
 \title{Virothérapie dans le traitement du cancer}
 \author{Dan, Martin, Hugo}
-\date{Date}
+\date{\today}
 
 \begin{document}
 
 \maketitle
 
-\section*{Introduction}
-
-La virothérapie, utilisée comme immunothérapie contre le cancer, a démontré son potentiel mais fait face à des défis majeurs.
-
-\section*{État de l'art}
+\section{État de l'art}
 
 Les virus oncolytiques, conçus spécifiquement pour cibler les cellules cancéreuses, rencontrent des mécanismes de résistance qui peuvent réduire leur efficacité \cite{goradel2022}. La compréhension de ces mécanismes est cruciale pour améliorer les stratégies thérapeutiques actuelles. Les recherches indiquent que les virus oncolytiques peuvent être utilisés efficacement dans différentes approches thérapeutiques, y compris en combinaison avec la chimiothérapie pour traiter divers types de cancer \cite{zeyaullah2012}.
 
@@ -24,6 +25,59 @@ Les défis liés à la sélection du virus et de la plateforme génétique appro
 Enfin, l'utilisation de virus oncolytiques en tant qu'adjuvants pour la vaccination anticancéreuse personnalisée représente une autre approche innovante. Cette stratégie, actuellement en phase de test clinique, utilise deux virus différents exprimant le même antigène tumoral pour amorcer et renforcer l'immunité antitumorale \cite{roy2021}. L'efficacité de cette vaccination dépend en partie de la sensibilité variable de chaque tumeur à l'infection par le virus oncolytique.
 
 La virothérapie en oncologie est un domaine en pleine expansion, avec des progrès significatifs et des défis persistants. La compréhension approfondie des interactions entre les virus, les tumeurs et le système immunitaire est essentielle pour optimiser cette forme de traitement et la rendre plus efficace.
+
+\section{Modèle de virothérapie}
+Dans cette partie, on détaille un modèle mathématique de virothérapie, qui utilise des équations différentielles ordinaires pour décrire la dynamique entre les cellules tumorales et les particules virales oncolytiques.
+
+\subsection{Hypothèses du Modèle}
+Le modèle repose sur plusieurs hypothèses :
+\begin{itemize}
+  \item Les populations de cellules et de virus sont bien mélangées et uniformément distribuées.
+  \item Les taux de croissance, d'infection et de mort sont constants au cours du temps.
+  \item Les interactions virus-cellule sont instantanées et ne dépendent que de la présence et de la densité des populations respectives.
+  \item L'environnement tumoral est fermé, sans introduction ou élimination externe de cellules ou de virus, à l'exception de la mort cellulaire et de la clairance virale.
+\end{itemize}
+
+\subsection{Analyse des Équations Différentielles}
+Le modèle considère trois populations principales: les cellules tumorales non infectées \( x(t) \), les cellules tumorales infectées \( y(t) \), et les particules virales libres \( v(t) \). Les équations suivantes régissent la dynamique du système :
+
+\begin{align}
+    \frac{dy}{dt} &= ry\left[1 - \left(\frac{y + x}{K}\right)^\epsilon\right] - kyv - \rho xy, \\
+    \frac{dx}{dt} &= kyv - \delta x, \\
+    \frac{dv}{dt} &= \alpha x - \omega v - kyv.
+\end{align}
+
+\subsubsection{Interprétation des Termes}
+\begin{itemize}
+  \item \( ry\left[1 - \left(\frac{y + x}{K}\right)^\epsilon\right] \) représente la croissance logistique des cellules infectées, modulée par la capacité porteuse \( K \) et l'effet de la densité de population contrôlé par l'exposant \( \epsilon \).
+  \item \( kyv \) décrit l'infection des cellules tumorales non infectées par les particules virales, avec \( k \) étant le taux d'infection.
+  \item \( \rho xy \) représente la formation de syncytia à partir des cellules infectées et non infectées, ce qui peut conduire à une augmentation de la destruction cellulaire.
+  \item \( \delta x \) est le taux de mort naturelle des cellules tumorales non infectées.
+  \item \( \alpha x \) indique la production de nouvelles particules virales par les cellules infectées.
+  \item \( \omega v \) est le taux d'élimination des particules virales par des mécanismes tels que la clairance immunitaire ou la dégradation naturelle.
+\end{itemize}
+
+\subsection{Paramètres du Modèle et Détermination}
+Nous présentons maintenant les paramètres du modèle dans le tableau ci-dessous, avec leur signification biologique et la méthode de détermination :
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Paramètre} & \textbf{Description}                                          & \textbf{Détermination}                                  \\ \midrule
+\( r \)            & Taux de croissance des cellules infectées                     & Ajustement des courbes de croissance cellulaire         \\
+\( K \)            & Capacité porteuse de l'environnement tumoral                  & Taille maximale de tumeurs observées                    \\
+\( k \)            & Taux d'infection des cellules par les virus                   & Essais virologiques quantitatifs                        \\
+\( \delta \)       & Taux de mort naturelle des cellules non infectées             & Études de survie cellulaire                             \\
+\( \rho \)         & Taux de formation de syncytia                                & Observation de la fusion cellulaire                     \\
+\( \alpha \)       & Taux de production de virus par cellule infectée              & Quantification des virions produits                     \\
+\( \omega \)       & Taux d'élimination des virus                                  & Cinétique de dégradation des virus et clairance immunitaire \\
+\( \epsilon \)     & Exposant modulant l'effet de la densité de population         & Ajustement aux données de croissance tumorale           \\ \bottomrule
+\end{tabular}
+}
+\caption{Paramètres du modèle de virothérapie et leur méthode de détermination.}
+\end{table}
 
 \bibliographystyle{unsrt}
 \bibliography{references}
